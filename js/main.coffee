@@ -86,7 +86,6 @@ class Awale
       console.log "$ @jouable(#{@pointeur}) : Ce coup est-il jouable ?" if debug 
       if ( (@pointeur in @camps[@player]) and (@trous[@pointeur]>0) )
         #console.log "le pointeur(#{@pointeur}) pointe sur une case du joueur#{@player}: #{@pointeur in @camps[@player]}" if debug
-        console.log "a : #{@total_graines(@adversaire)}"
         switch @total_graines(@adversaire) 
           when 0
             console.log @nourrirAdversaire()
@@ -145,8 +144,8 @@ $ ->
     $( "body" ).append $( "#info" ).hide()
     awale.jouer(t)
 
-  AIlevel = 1
-  $("input[name=AIlevel]").on "click", -> AIlevel = parseInt($(this).val())
+  aiLevel = 1
+  $("input[name=AIlevel]").on "click", -> aiLevel = parseInt($(this).val())
   
   $( "#ordi" ).on "click", ->
     if first_dblclick
@@ -162,39 +161,30 @@ $ ->
         break
     alert "???" if best is -1
         
-    awales = {}
+    level = 0
+    virtual_shot = (awales, ai, adversaire) ->
+      new_awales = {}
+      for key, game of awales
+        for i in game.camps[game.player]  
+          if game.jouable(i)
+            index = "#{key}##{i}."
+            #console.log "index #{index}"
+            new_awales[index] = clone game
+            new_awales[index].graphique = false
+            new_awales[index].jouer(i) 
+            
+            delta = new_awales[index].score[ai]-new_awales[index].score[adversaire]
+            if (delta>max)
+              [max, best] = [delta, parseInt(index[2..3])]
+              console.log "au niveau #{level} je change de strategie, je vise #{new_awales[index].score[ai]}-#{new_awales[index].score[adversaire]} en jouant le trou #{best}"
+      return new_awales    
+
+    a = {"#" : awale }
     
-    for i in awale.camps[awale.player]
-      awales["#{i}"] = clone awale
-      awales["#{i}"].graphique = false
-      if awales["#{i}"].jouable(i)
-        awales["#{i}"].jouer(i) 
-        delta = awales["#{i}"].score[awale.player]-awales["#{i}"].score[awale.adversaire]
-        if (delta>max)
-          max = delta 
-          best = parseInt(i)
-        
-        if AIlevel > 2
-          console.log "AI:level 2, max was #{max} with trou #{best}"
-          for j in awale.camps[awale.adversaire]
-            awales["#{i}-#{j}"] = clone awales["#{i}"]
-            if awales["#{i}-#{j}"].jouable(j)
-              awales["#{i}-#{j}"].jouer(j)
-              delta = awales["#{i}-#{j}"].score[awale.player]-awales["#{i}-#{j}"].score[awale.adversaire]
-              if (delta>max)
-                max = delta 
-                best = parseInt(i)
-              
-              if AIlevel is 3
-                console.log "AI:level 3, max was #{max} with trou #{best}"
-                for k in awale.camps[awale.player]
-                  awales["#{i}-#{j}-#{k}"] = clone awales["#{i}-#{j}"]
-                  if awales["#{i}-#{j}-#{k}"].jouable(k)
-                    awales["#{i}-#{j}-#{k}"].jouer(k)    
-                    delta = awales["#{i}-#{j}-#{k}"].score[awale.player]-awales["#{i}-#{j}-#{k}"].score[awale.adversaire]
-                    if (delta>max)
-                      max = delta 
-                      best = parseInt(i)
+    while level++ < aiLevel
+      console.log "level #{level}"
+      a = virtual_shot(a, awale.player, awale.adversaire)
+           
     console.log "Je vais t'éclater en jouant le trou #{best}"
     awale.jouer(best)
     

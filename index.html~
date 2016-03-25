@@ -29,9 +29,10 @@
                     <li><input type="radio" name="AIlevel" value="1" checked>1</li>
                     <li><input type="radio" name="AIlevel" value="2">2</li>
                     <li><input type="radio" name="AIlevel" value="3">3</li>   
-                    <li><input type="radio" name="AIlevel" value="4">4</li>
-                    <li><input type="radio" name="AIlevel" value="5">5</li>   
-                    <li><input type="radio" name="AIlevel" value="6">6</li>
+                    <li><input type="radio" name="AIlevel" value="4">2</li>
+                    <li><input type="radio" name="AIlevel" value="5">3</li>   
+                    <li><input type="radio" name="AIlevel" value="6">2</li>
+                    <li><input type="radio" name="AIlevel" value="7">3</li>   
               </ul>
           </div>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
