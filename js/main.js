@@ -39,7 +39,7 @@
       this.initialiser = function() {
         var j, m, results;
         results = [];
-        for (i = m = 1; m <= 12; i = ++m) {
+        for (i = m = 1; m <= 6; i = ++m) {
           this.pointeur = i;
           results.push((function() {
             var n, ref1, results1;
@@ -65,9 +65,11 @@
       this.trou_precedent = function() {
         return this.pointeur = (this.pointeur - 1) % 12;
       };
-      this.total_graines = function(joueur) {
-        var g, len, m, ref1;
-        g = 0;
+      this.total_graines = function(joueur, g) {
+        var len, m, ref1;
+        if (g == null) {
+          g = 0;
+        }
         ref1 = this.camps[joueur];
         for (m = 0, len = ref1.length; m < len; m++) {
           i = ref1[m];
@@ -76,15 +78,11 @@
         return g;
       };
       this.prendre_les_graines = function() {
-        var main;
+        var main, ref1;
         if (debug) {
           console.log("$ @prendre_les_graines : en ce moment il y a " + this.trous[this.pointeur] + " graine(s) dans le trou " + this.pointeur);
         }
-        main = this.trous[this.pointeur];
-        this.trous[this.pointeur] = 0;
-        if (debug) {
-          console.log("on vient de passer le trou " + this.pointeur + " à 0");
-        }
+        ref1 = [this.trous[this.pointeur], 0], main = ref1[0], this.trous[this.pointeur] = ref1[1];
         if (this.graphique) {
           $("#" + this.pointeur).empty();
         }
@@ -95,10 +93,14 @@
         if (this.graphique) {
           $("#" + this.pointeur).append("<div class='graine'></div>");
           return $("#" + this.pointeur + " .graine").each(function() {
+            var rand;
+            rand = function() {
+              return 10 + Math.floor(Math.random() * 45);
+            };
             return $(this).css({
-              top: (10 + Math.floor(Math.random() * 55)) + "%",
-              left: (10 + Math.floor(Math.random() * 45)) + "%",
-              transform: "rotate(" + (Math.floor(Math.random() * 180)) + "deg)"
+              top: (rand()) + "%",
+              left: (rand()) + "%",
+              transform: "rotate(" + (3 * rand()) + "deg)"
             });
           });
         }
@@ -106,10 +108,14 @@
       this.nourrirAdversaire = function() {
         return this.pointeur + this.trous[this.pointeur] > 6 * (this.player + 1);
       };
-      this.prenable = function() {
-        var gain_virtuel, origine, ref1, ref2;
-        gain_virtuel = 0;
-        origine = this.pointeur;
+      this.prenable = function(origine, gain_virtuel) {
+        var ref1, ref2;
+        if (origine == null) {
+          origine = this.pointeur;
+        }
+        if (gain_virtuel == null) {
+          gain_virtuel = 0;
+        }
         while (((ref1 = this.trous[this.pointeur]) === 2 || ref1 === 3) && (ref2 = this.pointeur, indexOf.call(this.camps[this.adversaire], ref2) >= 0)) {
           gain_virtuel += this.trous[this.pointeur];
           this.trou_precedent();
@@ -182,8 +188,10 @@
           console.log("$ @jouable(" + this.pointeur + ") : Ce coup est-il jouable ?");
         }
         if ((ref1 = this.pointeur, indexOf.call(this.camps[this.player], ref1) >= 0) && (this.trous[this.pointeur] > 0)) {
+          console.log("a : " + (this.total_graines(this.adversaire)));
           switch (this.total_graines(this.adversaire)) {
             case 0:
+              console.log(this.nourrirAdversaire());
               return this.nourrirAdversaire();
             default:
               return true;
@@ -302,34 +310,34 @@
         awales["" + i].graphique = false;
         if (awales["" + i].jouable(i)) {
           awales["" + i].jouer(i);
-          if (AIlevel < 2) {
-            delta = awales["" + i].score[awale.player] - awales["" + i].score[awale.adversaire];
-            if ((delta > max) && (awale.jouable(i))) {
-              max = delta;
-              best = parseInt(i);
-            }
-          } else {
+          delta = awales["" + i].score[awale.player] - awales["" + i].score[awale.adversaire];
+          if (delta > max) {
+            max = delta;
+            best = parseInt(i);
+          }
+          if (AIlevel > 2) {
+            console.log("AI:level 2, max was " + max + " with trou " + best);
             ref3 = awale.camps[awale.adversaire];
             for (n = 0, len2 = ref3.length; n < len2; n++) {
               j = ref3[n];
-              awales["" + i + j] = clone(awales["" + i]);
-              if (awales["" + i + j].jouable(j)) {
-                awales["" + i + j].jouer(j);
-                if (AIlevel < 3) {
-                  delta = awales["" + i + j].score[awale.player] - awales["" + i + j].score[awale.adversaire];
-                  if ((delta > max) && (awale.jouable(i))) {
-                    max = delta;
-                    best = parseInt(i);
-                  }
-                } else {
+              awales[i + "-" + j] = clone(awales["" + i]);
+              if (awales[i + "-" + j].jouable(j)) {
+                awales[i + "-" + j].jouer(j);
+                delta = awales[i + "-" + j].score[awale.player] - awales[i + "-" + j].score[awale.adversaire];
+                if (delta > max) {
+                  max = delta;
+                  best = parseInt(i);
+                }
+                if (AIlevel === 3) {
+                  console.log("AI:level 3, max was " + max + " with trou " + best);
                   ref4 = awale.camps[awale.player];
                   for (o = 0, len3 = ref4.length; o < len3; o++) {
                     k = ref4[o];
-                    awales["" + i + j + k] = clone(awales["" + i + j]);
-                    if (awales["" + i + j + k].jouable(k)) {
-                      awales["" + i + j + k].jouer(k);
-                      delta = awales["" + i + j + k].score[awale.player] - awales["" + i + j + k].score[awale.adversaire];
-                      if ((delta > max) && (awale.jouable(i))) {
+                    awales[i + "-" + j + "-" + k] = clone(awales[i + "-" + j]);
+                    if (awales[i + "-" + j + "-" + k].jouable(k)) {
+                      awales[i + "-" + j + "-" + k].jouer(k);
+                      delta = awales[i + "-" + j + "-" + k].score[awale.player] - awales[i + "-" + j + "-" + k].score[awale.adversaire];
+                      if (delta > max) {
                         max = delta;
                         best = parseInt(i);
                       }
