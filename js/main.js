@@ -39,7 +39,7 @@
       this.initialiser = function() {
         var j, m, results;
         results = [];
-        for (i = m = 1; m <= 6; i = ++m) {
+        for (i = m = 1; m <= 12; i = ++m) {
           this.pointeur = i;
           results.push((function() {
             var n, ref1, results1;
