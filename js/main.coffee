@@ -16,7 +16,7 @@ class Awale
     @score = {0: 0, 1: 0}
 
     @initialiser = () ->
-      for i in [1..6]
+      for i in [1..12]
         @pointeur = i
         @depose_une_graine() for j in [1..$graines]
           

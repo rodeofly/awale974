@@ -47,9 +47,7 @@ class Awale
 
     @nourrirAdversaire = -> return (@pointeur + @trous[@pointeur] > 6*(@player+1))
 
-    @prenable = () ->
-      gain_virtuel = 0
-      origine = @pointeur
+    @prenable = (origine = @pointeur, gain_virtuel = 0) ->
       while ( (@trous[@pointeur] in [2,3]) and (@pointeur in @camps[@adversaire]) )
         gain_virtuel += @trous[@pointeur]
         @trou_precedent()
