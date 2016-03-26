@@ -74,7 +74,7 @@ textarea {
 .camp {
   display:flex;
   justify-content: space-around;
-  
+  padding : 1vw;
 }
 
 #camp0 { 
@@ -120,7 +120,7 @@ textarea {
   height : 2vw;
   background : rgba(255,255,255,0.5);
   font-weight : bolder;
-  border : solid black 2px
+  border : solid black 2px;
   border-radius : 10px;
   right : 0;
   text-align : center;  

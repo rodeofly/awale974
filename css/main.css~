@@ -74,7 +74,7 @@ textarea {
 .camp {
   display:flex;
   justify-content: space-around;
-  
+  padding : 1vw;
 }
 
 #camp0 { 
@@ -140,7 +140,7 @@ textarea {
 }
 
 #AI {
-  position : absolute;
+
   display:flex;
   flex-direction:column;
   justify-content: center; 
