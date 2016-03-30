@@ -21,8 +21,7 @@
         <div id="game">
           <div id="score0" class="score"></div>
           <div id="score1" class="score"></div>
-          <div id="info"   class="score"></div>
-          
+          <div id="info"   class="score"></div>   
         </div>
         <div id="AI">
               <ul>  <li><button id="ordi">AI - Go !</button></li>

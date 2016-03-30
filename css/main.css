@@ -108,8 +108,10 @@ textarea {
 
 .graine {
   position : absolute;
-  width : 5.28vw;
-  height : 4vw;
+  width      : 5vw;
+  height     : 4vw;
+  top        : 50%;
+  left       : 50%;
   background : url(images/graine.png);
   background-size : 100% 100%;
 }
@@ -117,13 +119,15 @@ textarea {
 .score {
   position : absolute;
   width  : 5vw;
-  height : 2vw;
+  height : 5vw;
+  font-size : 3vw;
+  font-weight : bolder; 
+  text-align : center; 
+  line-height: 4vw;
   background : rgba(255,255,255,0.5);
-  font-weight : bolder;
   border : solid black 2px;
-  border-radius : 10px;
   right : 0;
-  text-align : center;  
+  border-radius : 100%;
 }
 
 #info {

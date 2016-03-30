@@ -4,57 +4,57 @@ $graines = 4
   
 class Awale
   constructor: ->
-    [@id, @player, @adversaire, @pointeur, @graphique, @trous] = [unique_id++, 0, 1, 1, 1, {} ]
-    @trous[i] = 0 for i in [1..12]     
-    [@camps, @score] = [{0: [1..6], 1: [7..12]}, {0: 0, 1: 0}]
-
-    @initialiser = () ->
+    [@id, @player, @adversaire, @pointeur, @graphique, ] = [unique_id++, 0, 1, 1, 1]
+    [@trous, @camps, @score] = [{}, {0: [1..6], 1: [7..12]}, {0: 0, 1: 0}]
+    @trous[i] = 0 for i in [1..12]
+        
+    @initialiser = ->
       for i in [1..12]
         @pointeur = i
-        @depose_une_graine() for j in [1..$graines]
+        @depose_une_graine() for [1..$graines]
           
     @joueur_suivant = ->
       [@player, @adversaire] = [@adversaire, @player]
       $( "#awalé_#{@id} .camp" ).toggleClass( "selected" ) if @graphique
 
     @trou_suivant   = -> @pointeur = @pointeur%12 + 1
-    @trou_precedent = -> 
-      @pointeur -= 1
-      @pointeur = 12 if @pointeur is 0
+    
+    @trou_precedent = -> @pointeur = if @pointeur is 1 then 12 else @pointeur-1
 
-    @total_graines = (joueur, g = 0) -> 
+    @total_graines = (joueur) -> 
+      g = 0
       g += @trous[i] for i in @camps[joueur]
       return g
 
     @prendre_les_graines = ->
       console.log "$ @prendre_les_graines : en ce moment il y a #{@trous[@pointeur]} graine(s) dans le trou #{@pointeur}" if debug
       [main, @trous[@pointeur] ] = [@trous[@pointeur], 0]
-      $("##{@pointeur}").empty() if @graphique
+      $("#awalé_#{@id} ##{@pointeur}").empty() if @graphique
       return main
       
     @depose_une_graine = ->
       @trous[@pointeur] += 1
       if @graphique
-        $( "##{@pointeur}" ).append( "<div class='graine' style='top:50%;left:50%;'></div>" )
-        $( "##{@pointeur} .graine" ).each ->
+        $( "#awalé_#{@id} ##{@pointeur}" ).append( "<div class='graine'></div>" )
+        $( "#awalé_#{@id} ##{@pointeur} .graine" ).each ->
           rand = -> return (15 + Math.floor(Math.random() * 35))
           $( this ).css(transform: "rotate(#{3*rand()}deg)").animate {top : "#{rand()}%", left: "#{rand()}%"}
 
     @nourrirAdversaire = -> return (@pointeur + @trous[@pointeur] > 6*(@player+1))
 
-    @prenable = (origine = @pointeur, gain_virtuel = 0) ->
+    @prenable = (origine = @pointeur) ->
+      gain = 0
       while ( (@trous[@pointeur] in [2,3]) and (@pointeur in @camps[@adversaire]) )
-        gain_virtuel += @trous[@pointeur]
+        gain += @trous[@pointeur]
         @trou_precedent()
       @pointeur = origine
-      return ( (gain_virtuel > 0) and (gain_virtuel isnt @total_graines(@adversaire)) )
+      return ( (gain > 0) and (gain isnt @total_graines(@adversaire)) )
 
     @prendre = () ->
-      console.log "$ @prendre() : il y a prise !" if debug
       while ( (@trous[@pointeur] in [2,3]) and (@pointeur in @camps[@adversaire]) )
         @score[@player] += @trous[@pointeur]
         @prendre_les_graines()
-        $( "#score#{@player}" ).html(@score[@player]) if @graphique
+        $( "#awalé_#{@id} #score#{@player}" ).html(@score[@player]) if @graphique
         @trou_precedent()
 
     @reprendre_ses_graines = ->
@@ -105,12 +105,18 @@ class Awale
     else
       console.log "argh, ce n'est pas jouable !" if debug  
 
-  to_html : -> 
-    $awalé = $( "<div><div id='awalé_#{@id}' class='awalé'><div id='camp0' class='camp'></div><div id='camp1' class='camp'></div></div></div>" )
+  to_html : ->
+    html = """
+    <div><div id='awalé_#{@id}' class='awalé'>
+        <div id='info'   class='score'></div>
+        <div id='score0' class='score'></div><div id='score1' class='score'></div>
+        <div id='camp0' class='camp'></div><div id='camp1' class='camp'></div>
+    </div></div>"""
+    $awalé = $( html )
     for trou in [1..12]
       $awalé.find( "#camp#{if trou<7 then 0 else 1}" ).append "<div id='#{trou}' class='trou'>"
       @pointeur = trou
-      @depose_une_graine() for j in [0..@trous[j]-1]
+      @depose_une_graine() for [1..@trous[trou]]
     return $awalé.html()     
 
 $ ->
@@ -140,7 +146,7 @@ $ ->
   
   $( "#ordi" ).on "click", ->
     on_first_shot() if first_shot    
-    [max, best] = [-50,-1]
+    [levelmax, best] = [-50,-1]
     for i in awale.camps[awale.player]
       if awale.jouable(i)
         best = i
