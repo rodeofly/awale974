@@ -16,10 +16,12 @@
         <![endif]-->
     </head>
     <body>
-
-        
         <div id="game">
-            
+            <div id='awale_1' class='awale'>
+                <div id='info'   class='score'></div>
+                <div id='score0' class='score'></div><div id='score1' class='score'></div>
+                <div id='camp0'  class='camp' ></div><div id='camp1'  class='camp' ></div>
+            </div>
         </div>
         <div id="AI">
               <ul>  <li><button id="ordi">AI - Go !</button></li>
@@ -28,7 +30,7 @@
                     <li><input type="radio" name="AIlevel" value="6">3</li>
                     <li><input type="radio" name="AIlevel" value="8">4</li>
               </ul>
-          </div>
+        </div>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
 
