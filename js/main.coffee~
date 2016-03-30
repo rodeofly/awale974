@@ -28,7 +28,8 @@ class Awale
     
     @trou_precedent = -> @pointeur = if @pointeur is 1 then 12 else @pointeur-1
 
-    @total_graines = (joueur, g = 0) ->
+    @total_graines = (joueur) -> 
+      g = 0
       g += @trous[i] for i in @camps[joueur]
       return g
 
@@ -85,9 +86,11 @@ class Awale
       if @jouable(@pointeur)
         origine = @pointeur
         main = @prendre_les_graines() 
-        while main-- > 0
+        while main > 0
           @trou_suivant()
-          if @pointeur isnt origine then @depose_une_graine()
+          if @pointeur isnt origine 
+            @depose_une_graine()
+            main--
         @prendre() if @prenable()    
         @joueur_suivant()       
         if @fin_de_jeu()  

@@ -173,10 +173,11 @@
         if (this.jouable(this.pointeur)) {
           origine = this.pointeur;
           main = this.prendre_les_graines();
-          while (main-- > 0) {
+          while (main > 0) {
             this.trou_suivant();
             if (this.pointeur !== origine) {
               this.depose_une_graine();
+              main -= 1;
             }
           }
           if (this.prenable()) {

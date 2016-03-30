@@ -86,9 +86,11 @@ class Awale
       if @jouable(@pointeur)
         origine = @pointeur
         main = @prendre_les_graines() 
-        while main-- > 0
+        while main > 0
           @trou_suivant()
-          if @pointeur isnt origine then @depose_une_graine()
+          if @pointeur isnt origine 
+            @depose_une_graine()
+            main -= 1
         @prendre() if @prenable()    
         @joueur_suivant()       
         if @fin_de_jeu()  
