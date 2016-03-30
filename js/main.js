@@ -170,28 +170,34 @@
       this.jouer = function(pointeur) {
         var main, origine;
         this.pointeur = pointeur;
+        origine = this.pointeur;
+        main = this.prendre_les_graines();
+        while (main > 0) {
+          this.trou_suivant();
+          if (this.pointeur !== origine) {
+            this.depose_une_graine();
+            main -= 1;
+          }
+        }
+        if (this.prenable()) {
+          this.prendre();
+        }
+        this.joueur_suivant();
+        if (this.fin_de_jeu()) {
+          if (this.graphique) {
+            alert("jeu terminé !");
+          }
+          return this.reprendre_ses_graines();
+        }
+      };
+      this.essayer = function(pointeur) {
+        this.pointeur = pointeur;
         if (this.jouable(this.pointeur)) {
-          origine = this.pointeur;
-          main = this.prendre_les_graines();
-          while (main > 0) {
-            this.trou_suivant();
-            if (this.pointeur !== origine) {
-              this.depose_une_graine();
-              main -= 1;
-            }
-          }
-          if (this.prenable()) {
-            this.prendre();
-          }
-          this.joueur_suivant();
-          if (this.fin_de_jeu()) {
-            if (this.graphique) {
-              alert("jeu terminé !");
-            }
-            return this.reprendre_ses_graines();
-          }
+          return this.jouer(this.pointeur);
         } else {
-          return $("#" + this.pointeur).append($("#info").html(":(").show());
+          if (this.graphique) {
+            return $("#" + this.pointeur).append($("#info").html(":(").show());
+          }
         }
       };
     }
@@ -222,23 +228,23 @@
     };
     $(".trou").on("dblclick", function() {
       var t;
+      $("#awale_" + awale.id).append($("#info").hide());
       t = parseInt($(this).attr("id"));
       if (first_shot) {
         on_first_shot(t);
       }
-      $("#awale_" + awale.id).append($("#info").hide());
-      return awale.jouer(t);
+      return awale.essayer(t);
     });
     $("input[name=AIlevel]").on("click", function() {
       return AILEVEL = parseInt($(this).val());
     });
     return $("#ordi").on("click", function() {
-      var a, best, j, len, level, max, ref1, ref2, virtual_shot;
+      var a, adversaire, ai, best, j, len, level, max, ref1, ref2, virtual_shot;
+      $("#awale_" + awale.id).append($("#info").hide());
       if (first_shot) {
         on_first_shot();
       }
-      $("#awale_" + awale.id).append($("#info").hide());
-      ref1 = [0, -49, 0], level = ref1[0], max = ref1[1], best = ref1[2];
+      ref1 = [awale.player, awale.adversaire, 0, -49, 0], ai = ref1[0], adversaire = ref1[1], level = ref1[2], max = ref1[3], best = ref1[4];
       ref2 = awale.camps[awale.player];
       for (j = 0, len = ref2.length; j < len; j++) {
         best = ref2[j];
@@ -246,7 +252,7 @@
           break;
         }
       }
-      virtual_shot = function(awales, ai, adversaire) {
+      virtual_shot = function(awales) {
         var clone, delta, game, i, index, k, key, len1, new_awales, ref3, ref4, ref5, sa, sj;
         clone = function(obj) {
           var key, newInstance;
@@ -284,7 +290,7 @@
         "": awale
       };
       while (level++ < AILEVEL) {
-        a = virtual_shot(a, awale.player, awale.adversaire);
+        a = virtual_shot(a);
       }
       console.log("Je vais t'éclater en jouant le trou " + best);
       return awale.jouer(best);

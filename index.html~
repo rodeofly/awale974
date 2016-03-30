@@ -17,7 +17,7 @@
     </head>
     <body>
         <div id="game">
-            <div id='awale_1' class='awale'>
+            <div id='awale_0' class='awale'>
                 <div id='info'   class='score'></div>
                 <div id='score0' class='score'></div><div id='score1' class='score'></div>
                 <div id='camp0'  class='camp' ></div><div id='camp1'  class='camp' ></div>

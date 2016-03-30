@@ -83,7 +83,6 @@ class Awale
       else return false
       
     @jouer = (@pointeur) ->
-      if @jouable(@pointeur)
         origine = @pointeur
         main = @prendre_les_graines() 
         while main > 0
@@ -95,8 +94,12 @@ class Awale
         @joueur_suivant()       
         if @fin_de_jeu()  
           alert "jeu terminé !" if @graphique
-          @reprendre_ses_graines()
-      else $( "##{@pointeur}" ).append $( "#info" ).html(":(").show()
+          @reprendre_ses_graines()        
+    
+    @essayer = (@pointeur) ->
+      if @jouable(@pointeur) then @jouer(@pointeur)
+      else
+        $( "##{@pointeur}" ).append $( "#info" ).html(":(").show() if @graphique
 
 $ ->
   awale = new Awale()
@@ -115,21 +118,21 @@ $ ->
     first_shot = false
     
   $( ".trou" ).on "dblclick", ->
+    $( "#awale_#{awale.id}" ).append $( "#info" ).hide()
     t = parseInt( $( this ).attr "id" )
     on_first_shot(t) if first_shot
-    $( "#awale_#{awale.id}" ).append $( "#info" ).hide()
-    awale.jouer(t)
+    awale.essayer(t)
     
   $("input[name=AIlevel]").on "click", -> AILEVEL = parseInt($(this).val())
   
   $( "#ordi" ).on "click", ->
-    on_first_shot() if first_shot    
     $( "#awale_#{awale.id}" ).append $( "#info" ).hide()
-    [level, max, best] = [0, -49,0]
+    on_first_shot() if first_shot
+    [ai, adversaire, level, max, best] = [awale.player, awale.adversaire, 0, -49, 0]
     for best in awale.camps[awale.player]
       break if awale.jouable(best)     
 
-    virtual_shot = (awales, ai, adversaire) ->
+    virtual_shot = (awales) ->
       clone = (obj) ->
         return obj if not obj? or typeof obj isnt 'object'
         newInstance = new obj.constructor()
@@ -150,7 +153,7 @@ $ ->
       return new_awales
     
     a = {"" : awale } 
-    a = virtual_shot(a, awale.player, awale.adversaire) while level++ < AILEVEL          
+    a = virtual_shot(a) while level++ < AILEVEL          
     console.log "Je vais t'éclater en jouant le trou #{best}"
     awale.jouer(best)
     
