@@ -98,8 +98,7 @@ class Awale
     
     @essayer = (@pointeur) ->
       if @jouable(@pointeur) then @jouer(@pointeur)
-      else
-        $( "##{@pointeur}" ).append $( "#info" ).html(":(").show() if @graphique
+      else $( "##{@pointeur}" ).append $( "#info" ).html(":(").show()
 
 $ ->
   awale = new Awale()
@@ -142,8 +141,7 @@ $ ->
       for key, game of awales
         for i in game.camps[game.player]  
           if game.jouable(i)
-            index = "#{key}#{i}."
-            new_awales[index] = $.extend(true, {}, game)
+            new_awales[index = "#{key}#{i}."] = clone game
             new_awales[index].graphique = false
             new_awales[index].jouer(i)
             [sj, sa] = [new_awales[index].score[ai], new_awales[index].score[adversaire]]       

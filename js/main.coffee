@@ -83,23 +83,22 @@ class Awale
       else return false
       
     @jouer = (@pointeur) ->
-        origine = @pointeur
-        main = @prendre_les_graines() 
-        while main > 0
-          @trou_suivant()
-          if @pointeur isnt origine 
-            @depose_une_graine()
-            main -= 1
-        @prendre() if @prenable()    
-        @joueur_suivant()       
-        if @fin_de_jeu()  
-          alert "jeu terminé !" if @graphique
-          @reprendre_ses_graines()        
+      origine = @pointeur
+      main = @prendre_les_graines() 
+      while main > 0
+        @trou_suivant()
+        if @pointeur isnt origine 
+          @depose_une_graine()
+          main -= 1
+      @prendre() if @prenable()    
+      @joueur_suivant()       
+      if @fin_de_jeu()  
+        alert "jeu terminé !" if @graphique
+        @reprendre_ses_graines()        
     
     @essayer = (@pointeur) ->
       if @jouable(@pointeur) then @jouer(@pointeur)
-      else
-        $( "##{@pointeur}" ).append $( "#info" ).html(":(").show() if @graphique
+      else $( "##{@pointeur}" ).append $( "#info" ).html(":(").show()
 
 $ ->
   awale = new Awale()
@@ -142,8 +141,7 @@ $ ->
       for key, game of awales
         for i in game.camps[game.player]  
           if game.jouable(i)
-            index = "#{key}#{i}."
-            new_awales[index] = clone game
+            new_awales[index = "#{key}#{i}."] = clone game
             new_awales[index].graphique = false
             new_awales[index].jouer(i)
             [sj, sa] = [new_awales[index].score[ai], new_awales[index].score[adversaire]]       

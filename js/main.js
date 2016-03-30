@@ -195,9 +195,7 @@
         if (this.jouable(this.pointeur)) {
           return this.jouer(this.pointeur);
         } else {
-          if (this.graphique) {
-            return $("#" + this.pointeur).append($("#info").html(":(").show());
-          }
+          return $("#" + this.pointeur).append($("#info").html(":(").show());
         }
       };
     }
@@ -272,8 +270,7 @@
           for (k = 0, len1 = ref3.length; k < len1; k++) {
             i = ref3[k];
             if (game.jouable(i)) {
-              index = "" + key + i + ".";
-              new_awales[index] = clone(game);
+              new_awales[index = "" + key + i + "."] = clone(game);
               new_awales[index].graphique = false;
               new_awales[index].jouer(i);
               ref4 = [new_awales[index].score[ai], new_awales[index].score[adversaire]], sj = ref4[0], sa = ref4[1];
