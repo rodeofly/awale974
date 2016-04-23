@@ -143,17 +143,20 @@ textarea {
 }
 
 #AI {
-  display:flex;
-  flex-direction:column;
-  justify-content: center; 
+  display: inline-block;
 }
 
 ul
 {
-    list-style-type: none;display : inline-block;
+    list-style-type: none;
+    display : inline-block;
 }
 
 li {
+  display : inline-block;
+}
+
+#infoAI {
   display : inline-block;
 }
 
