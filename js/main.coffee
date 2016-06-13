@@ -102,15 +102,17 @@ $ ->
     FIRST_SHOT = false
   
   $( ".trou" ).on "click", ->
-    t = parseInt( $( this ).attr "id" )
-    $( ".trou" ).removeClass( "selected" )
-    $( this ).addClass( "selected" ).append( $( "#info" ).html(awale.trous[t]).show() )
-    
-  $( ".trou" ).on "dblclick", ->
-    $( "#awale_#{awale.id}" ).append $( "#info" ).hide()
-    t = parseInt( $( this ).attr "id" )
-    on_first_shot(t) if FIRST_SHOT
-    awale.essayer(t)
+    switch $( this ).hasClass "selected"
+      when true
+        $( this ).removeClass "selected" 
+        $( "#awale_#{awale.id}" ).append $( "#info" ).hide()
+        t = parseInt( $( this ).attr "id" )
+        on_first_shot(t) if FIRST_SHOT
+        awale.essayer(t)
+      else
+        t = parseInt( $( this ).attr "id" )
+        $( ".trou" ).removeClass( "selected" )
+        $( this ).addClass( "selected" ).append( $( "#info" ).html(awale.trous[t]).show() )    
     
   $("input[name=AIlevel]").on "click", -> AILEVEL = parseInt($(this).val())
   

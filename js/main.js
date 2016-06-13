@@ -207,18 +207,20 @@
     };
     $(".trou").on("click", function() {
       var t;
-      t = parseInt($(this).attr("id"));
-      $(".trou").removeClass("selected");
-      return $(this).addClass("selected").append($("#info").html(awale.trous[t]).show());
-    });
-    $(".trou").on("dblclick", function() {
-      var t;
-      $("#awale_" + awale.id).append($("#info").hide());
-      t = parseInt($(this).attr("id"));
-      if (FIRST_SHOT) {
-        on_first_shot(t);
+      switch ($(this).hasClass("selected")) {
+        case true:
+          $(this).removeClass("selected");
+          $("#awale_" + awale.id).append($("#info").hide());
+          t = parseInt($(this).attr("id"));
+          if (FIRST_SHOT) {
+            on_first_shot(t);
+          }
+          return awale.essayer(t);
+        default:
+          t = parseInt($(this).attr("id"));
+          $(".trou").removeClass("selected");
+          return $(this).addClass("selected").append($("#info").html(awale.trous[t]).show());
       }
-      return awale.essayer(t);
     });
     $("input[name=AIlevel]").on("click", function() {
       return AILEVEL = parseInt($(this).val());

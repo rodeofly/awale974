@@ -1,4 +1,4 @@
-[ID, AILEVEL]  = [0, 1]
+[ID, AILEVEL, FIRST_SHOT]  = [0, 1, true]
 
 class Awale
   constructor: ->
@@ -10,7 +10,7 @@ class Awale
       @trous[@pointeur] += 1
       if @graphique
         r = (min, max) -> return (min + Math.floor(Math.random() * (max+1-min)))
-        $( "#awale_#{@id} ##{@pointeur}" ).append "<div class='graine' style='transform : rotate(#{r(0,360)}deg); top: #{r(15,55)}%; left: #{r(15,55)}%;'></div>"
+        $( "#awale_#{@id} ##{@pointeur}" ).append "<div class='graine' style='transform: rotate(#{r(0,360)}deg); top: #{r(15,55)}%; left: #{r(15,55)}%;'></div>"
 
     @initialiser = ->    
       for i in [1..12]
@@ -94,29 +94,31 @@ class Awale
 $ ->
   awale = new Awale()
   awale.initialiser()
-  first_shot = true
+  
   on_first_shot = (trou) ->
     trou ?= Math.floor(Math.random() * 12) + 1
     [awale.player, awale.adversaire] = if trou in [1..6] then [0, 1] else [1, 0]
     $( "#awale_#{awale.id} #camp#{awale.player}" ).addClass( "selected" )
-    first_shot = false
+    FIRST_SHOT = false
   
   $( ".trou" ).on "click", ->
-    t = parseInt( $( this ).attr "id" )
-    $( ".trou" ).removeClass( "selected" )
-    $( this ).addClass( "selected" ).append( $( "#info" ).html(awale.trous[t]).show() )
-    
-  $( ".trou" ).on "dblclick", ->
-    $( "#awale_#{awale.id}" ).append $( "#info" ).hide()
-    t = parseInt( $( this ).attr "id" )
-    on_first_shot(t) if first_shot
-    awale.essayer(t)
+    switch $( this ).hasClass "selected"
+      when true
+        $( this ).removeClass( "selected" )
+        $( "#awale_#{awale.id}" ).append $( "#info" ).hide()
+        t = parseInt( $( this ).attr "id" )
+        on_first_shot(t) if FIRST_SHOT
+        awale.essayer(t)
+      else
+        t = parseInt( $( this ).attr "id" )
+        $( ".trou" ).removeClass( "selected" )
+        $( this ).addClass( "selected" ).append( $( "#info" ).html(awale.trous[t]).show() )    
     
   $("input[name=AIlevel]").on "click", -> AILEVEL = parseInt($(this).val())
   
   $( "#ordi" ).on "click", ->
     $( "#awale_#{awale.id}" ).append $( "#info" ).hide()
-    on_first_shot() if first_shot
+    on_first_shot() if FIRST_SHOT
     [ai, adversaire, level, max, best_shot] = [awale.player, awale.adversaire, 0, -49, 0]
     for best_shot in awale.camp[awale.player]
       break if awale.jouable(best_shot)     
@@ -144,4 +146,4 @@ $ ->
     virtual_shot({"" : awale})
     $( "#infoAI" ).html "Je vais jouer le trou #{best_shot}"
     awale.jouer(best_shot)
-    
+
